@@ -25,11 +25,17 @@ class IoTMakersDeviceClient:
 		self.hndl = -1;
 
 	def ImInit(self, logLevel=1):
+		print("====== the path of IotmakersStdDevicePy3 ======")
+		print(IotmakersStdDevicePy3)
+		print("====== the path of IotmakersStdDevicePy3 ======")
 		self.logLevel = logLevel;
 		self.hndl = client.ImInit(self.logLevel);
 		return self.hndl;
 
 	def ImRelease(self):
+		print("====== the path of IotmakersStdDevicePy3 ======")
+		print(IotmakersStdDevicePy3)
+		print("====== the path of IotmakersStdDevicePy3 ======")
 		client.ImRelease(self.hndl);
 
 	def ImConnectTo(self, serverIp, serverPort):
@@ -69,6 +75,9 @@ class IoTMakersDeviceClient:
 
 
 	def ImSetControlCallBackHandler(self, OnResourceSetRequestHandler=None, OnResourceRetrieveOneRequestHandler=None, OnResourceRetrieveAllRequestHandler=None):
+		print("====== the path of IotmakersStdDevicePy3 ======")
+		print(IotmakersStdDevicePy3)
+		print("====== the path of IotmakersStdDevicePy3 ======")
 		client.ImSetOnResourceSetRequestHandler(self.hndl, OnResourceSetRequestHandler);
 		client.ImSetOnResourceRetrieveOneRequestHandler(self.hndl, OnResourceRetrieveOneRequestHandler);
 		client.ImSetOnResourceRetrieveAllRequestHandler(self.hndl, OnResourceRetrieveAllRequestHandler);
