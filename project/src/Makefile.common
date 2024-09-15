@@ -1,0 +1,30 @@
+
+SRC_COMMON = $(wildcard $(IM_SDK_HOME)/util/*.c)
+SRC_COMMON += $(wildcard $(IM_SDK_HOME)/packet/head/*.c)
+SRC_COMMON += $(wildcard $(IM_SDK_HOME)/packet/body/*.c)
+SRC_COMMON += $(wildcard $(IM_SDK_HOME)/packet/*.c)
+SRC_COMMON += $(wildcard $(IM_SDK_HOME)/deps/parson/*.c)
+SRC_COMMON += $(wildcard $(IM_SDK_HOME)/deps/netio/*.c)
+SRC_COMMON += $(wildcard $(IM_SDK_HOME)/client/*.c)
+
+VPATH = \
+	:$(IM_SDK_HOME)/util \
+	:$(IM_SDK_HOME)/deps \
+	:$(IM_SDK_HOME)/deps/parson \
+	:$(IM_SDK_HOME)/deps/netio \
+	:$(IM_SDK_HOME)/packet/head:$(IM_SDK_HOME)/packet/body:$(IM_SDK_HOME)/packet \
+	:$(IM_SDK_HOME)/client \
+
+IM_SDK_OBJS = $(addprefix objs/,$(notdir $(SRC_COMMON:.c=.o)))
+
+IM_SDK_INC = \
+	-I$(IM_SDK_HOME) \
+	-I$(IM_SDK_HOME)/deps \
+
+CFLAGS = \
+	$(IM_SDK_INC) \
+	-DDEBUG \
+
+#    -fPIC -fno-asynchronous-unwind-tables -fno-omit-frame-pointer -ffreestanding -Os -fno-stack-protector -ffunction-sections -fdata-sections -fno-reorder-functions -fno-defer-pop -fno-strict-overflow  -std=gnu99 -Wall -Wextra -Werror -pedantic
+
+

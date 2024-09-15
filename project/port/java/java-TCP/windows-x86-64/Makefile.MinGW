@@ -1,0 +1,96 @@
+#####################################################
+# Copyright (c) 2018 KT Corp. All rights reserved.
+#####################################################
+
+JAVA_HOME = z:\SanDISK\home\local\Windows\openjdk-1.8.0.265-1.b01.windows.x86_64
+JAVAC	= $(JAVA_HOME)\bin\javac
+JAVA	= $(JAVA_HOME)\bin\java
+JAR     = $(JAVA_HOME)\bin\jar
+
+############################################
+#MinGW = z:\SanDISK\home\local\Windows\mingw64
+#MinGW = z:\SanDISK\home\local\Windows\mingw32
+MinGW = z:\SanDISK\home\local\Windows\mingw64
+
+SHELL	= CMD.EXE
+#
+### HOWTO BUILD EXAMPLE ON COMMAND LINE
+# SET MINGW_PATH=c:\Program Files\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32
+# set "PATH=%MINGW_PATH%\bin\;%PATH%"
+# mingw32-make -f Makefile.MinGW32
+############################################
+
+CPP	= $(MinGW)/bin/g++.exe
+CC	= $(MinGW)/bin/gcc.exe
+RM	= DEL
+AR	= $(MinGW)\bin\ar r
+RANLIB	= $(MinGW)\bin\ranlib
+
+#####################################################
+# IoTMakers Device SDK Source Home
+#####################################################
+IM_PROJECT_HOME = ../../../..
+IM_SDK_HOME = $(IM_PROJECT_HOME)/src
+include $(IM_SDK_HOME)/Makefile.common
+
+CFLAGS += \
+	-fPIC \
+
+OFLAGS += \
+
+LIBS += \
+	-L"$(MinGW)/x86_64-w64-mingw32/lib" \
+	"$(MinGW)/x86_64-w64-mingw32/lib/libws2_32.a" \
+
+
+ifeq ($(HAVE_OPENSSL),1)
+	CFLAGS += -DHAVE_OPENSSL
+	OFLAGS += -lssl -lcrypto
+endif
+
+
+
+#####################################################
+# JNI + JAR Library (Java Native Interface)
+#####################################################
+JNI_IMPL_SRC = $(wildcard $(IM_SDK_HOME)/java-jni/*.c)
+
+JNI_IMPL_OBJ = $(addprefix objs/,$(notdir $(JNI_IMPL_SRC:.c=.o)))
+
+VPATH += $(IM_SDK_HOME)/java-jni
+
+CFLAGS += \
+	-I$(JAVA_HOME)/include \
+	-I$(JAVA_HOME)/include/win32 \
+
+###########
+# Windows/amd64/libiotmakers-std-device-jni.dll
+###########
+JNIPATH = jni-libs/Windows/amd64
+
+#####################################################
+# Build Rule
+#####################################################
+all: \
+	libiotmakers-std-device-jni.dll \
+	libiotmakers-std-device-jni.jar \
+
+libiotmakers-std-device-jni.dll: $(IM_SDK_OBJS) $(JNI_IMPL_OBJ)
+	${CC} -shared -o $(JNIPATH)/$@  $(JNI_IMPL_OBJ)  $(IM_SDK_OBJS) ${OFLAGS} -Wl,-add-stdcall-alias ${LIBS} 
+
+libiotmakers-std-device-jni.jar:
+	$(JAR) uvf ../$@  $(JNIPATH)
+
+#####################################################
+# Compile Rule
+#####################################################
+objs/%.o: %.c
+	${CC} -c -o $@ $< ${CFLAGS}
+
+
+#####################################################
+# Utils
+#####################################################
+clean:
+	$(RM) .\objs\*  
+

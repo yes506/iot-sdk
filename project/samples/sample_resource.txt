@@ -1,0 +1,53 @@
+[
+	{
+		"subscriptionReference": "/devices/testbyw111/subscriptions/subscriptionAll",
+		"eventReference": "/devices/testbyw111/resources/testAllTypeUri",
+		"representation": {
+			"ectestBoolean": true,
+			"ectestDoubleArray": [
+				10.1,
+				20.2
+			],
+			"ectestObject": {
+				"x": 10,
+				"y": 20,
+				"z": 30
+			},
+			"ectestString": "testValue",
+			"ectestDouble": 10.1,
+			"ectestBooleanArray": [
+				true,
+				false
+			],
+			"ectestIntegerArray": [
+				10,
+				20
+			],
+			"ectestStringArray": [
+				"testValue1",
+				"testValue2"
+			],
+			"id": "testAllTypeUri",
+			"ectestObjectArray": [
+				{
+					"a": 10,
+					"b": 20,
+					"c": 30
+				},
+				{
+					"x": "10",
+					"y": "20",
+					"z": "30"
+				}
+			],
+			"ectestBin": [
+				97,
+				98,
+				99,
+				100
+			],
+			"ectestInteger": 10
+		},
+		"eventTime": "2021-03-03T17:55:19.507"
+	}
+]

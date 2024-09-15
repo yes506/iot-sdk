@@ -1,0 +1,18 @@
+
+
+## 리눅스
+export EC_IP="220.90.216.9"
+export EC_PORT="10020"
+export DEV_ID="demo"
+export DEV_PW="999999999"
+export DEV_GW="OPEN_TCP_001PTL001_1000001433"
+
+## 윈도우
+set EC_IP="220.90.216.9"
+set EC_PORT="10020"
+set DEV_ID="demo"
+set DEV_PW="999999999"
+set DEV_GW="OPEN_TCP_001PTL001_1000001433"
+
+## 실행
+run-sample

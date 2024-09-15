@@ -1,0 +1,28 @@
+
+===================
+mbedtls
+===================
+1. def MBEDTLS_NET_C 
+	@Z:\RAMDisk\sdk_root\middleware\third_party\mbedtls\include\mbedtls\config.h
+	/*  kcshin 2020-10-20
+	*/
+	#define MBEDTLS_NET_C
+
+2. undef MBEDTLS_FS_IO 
+	@Z:\RAMDisk\sdk_root\middleware\third_party\mbedtls\include\mbedtls\config.h
+	/* kcshin 2020-10-20
+	#define MBEDTLS_FS_IO
+	*/
+
+3. undef MBEDTLS_TIMING_C 
+	@Z:\RAMDisk\sdk_root\middleware\third_party\mbedtls\include\mbedtls\config.h
+	/* kcshin 2020-10-20
+	#define MBEDTLS_TIMING_C
+	*/
+
+4. def MBEDTLS_NO_PLATFORM_ENTROPY 
+	@Z:\RAMDisk\sdk_root\middleware\third_party\mbedtls\include\mbedtls\config.h
+	/* 
+	kcshin 2020-10-20
+	*/
+	#define MBEDTLS_NO_PLATFORM_ENTROPY

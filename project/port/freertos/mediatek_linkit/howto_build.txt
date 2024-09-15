@@ -1,0 +1,3 @@
+
+
+./build.sh mt7697_hdk  wifi_demo

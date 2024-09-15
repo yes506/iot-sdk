@@ -1,0 +1,23 @@
+
+
+2020-09-21
+==========
+
+Fixed : 동적메모리 할당시 문자열 끝에 NULL 저장을 위한 1바이트 추가 
+	str_replace()@stringx.h
+
+Fixed : 메모리 누수 수정
+	http_req()@http-client-c.h
+	http_req_with_body_callback()@http-client-c.h
+
+
+
+2020-08-06
+==========
+Added : ipv6 지원
+	connect_ipv6_to()@http-client-c.h
+
+Added : http response 처리용 콜백 적용
+	http_req_with_body_callback()@http-client-c.h
+
+

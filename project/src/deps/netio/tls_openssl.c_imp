@@ -1,0 +1,638 @@
+/** 
+ *  Copyright (c) 2018 KT Corp. All rights reserved.
+ *
+ *  This is a proprietary software of KT corp, and you may not use this file except in
+ *  compliance with license agreement with KT corp. Any redistribution or use of this
+ *  software, with or without modification shall be strictly prohibited without prior written
+ *  approval of KT corp, and the copyright notice above does not evidence any actual or
+ *  intended publication of such software.
+ *
+ */
+
+#ifdef HAVE_OPENSSL
+
+
+#include "net_context.h"
+#include "kt_iot_log.h"
+
+static int init_ssl_lib()
+{
+  /* ---------------------------------------------------------- *
+   * initialize SSL library                                     *
+   * ---------------------------------------------------------- */
+  if(SSL_library_init() != (1) ){
+    ERR("Could not initialize the OpenSSL library!");
+    return -1;
+  }
+  SSL_load_error_strings();
+  return 0;
+}
+
+static SSL_CTX* init_ssl_context()
+{
+  /* ---------------------------------------------------------- *
+   * initialize SSL Context                                     *
+   * ---------------------------------------------------------- */
+    const SSL_METHOD *method = TLSv1_2_client_method();
+    SSL_CTX *ctx = SSL_CTX_new(method);
+
+    if ( ctx == NULL )    {
+        ERR("Unable to SSL_CTX_new.");
+        return NULL;
+    }
+
+    return ctx;
+}
+
+
+
+static int __does_need_to_verify_peer(tls_channel_tPtr tls_ctx)
+{
+  if ( tls_ctx->g_ca_file != NULL ||  tls_ctx->g_ca_path != NULL )  {
+      return (1);
+  }
+
+  return 0;
+}
+
+
+
+static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx)
+{
+    char    buf[256];
+    X509   *err_cert;
+    int     err, depth;
+    SSL    *ssl;
+
+    err_cert = X509_STORE_CTX_get_current_cert(ctx);
+    err = X509_STORE_CTX_get_error(ctx);
+    depth = X509_STORE_CTX_get_error_depth(ctx);
+
+    /*
+     * Retrieve the pointer to the SSL of the connection currently treated
+     * and the application specific data stored into the SSL object.
+     */
+    ssl = X509_STORE_CTX_get_ex_data(ctx, SSL_get_ex_data_X509_STORE_CTX_idx());
+
+    X509_NAME_oneline(X509_get_subject_name(err_cert), buf, 256);
+
+    /*
+     * Catch a too long certificate chain. The depth limit set using
+     * SSL_CTX_set_verify_depth() is by purpose set to "limit+1" so
+     * that whenever the "depth>verify_depth" condition is met, we
+     * have violated the limit and want to log this error condition.
+     * We must do it here, because the CHAIN_TOO_LONG error would not
+     * be found explicitly; only errors introduced by cutting off the
+     * additional certificates would be logged.
+     */
+    if (!preverify_ok) {
+        INF("verify error:num=%d:%s:depth=%d:%s", err,
+                 X509_verify_cert_error_string(err), depth, buf);
+    }
+    else     {
+        INF("depth=%d:%s", depth, buf);
+    }
+
+    /*
+     * At this point, err contains the last verification error. We can use
+     * it for something special
+     */
+    if (!preverify_ok && (err == X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT))    {
+      /*
+	  /// 	// @Arm ubuntu 18 64 2021-06-28
+	  //../../../../src/deps/netio/tls_openssl.c_imp:101:49: error: dereferencing pointer to incomplete type ‘X509_STORE_CTX {aka struct x509_store_ctx_st}’
+      // X509_NAME_oneline(X509_get_issuer_name(ctx->current_cert), buf, 256);
+	  ///
+	  X509_NAME_oneline(X509_get_issuer_name(ctx->current_cert), buf, 256);
+      INF("issuer= %s", buf);
+	  */
+    }
+
+    INF("preverify_ok? %d", preverify_ok);
+    return preverify_ok;
+ }
+
+
+
+static int init_ssl_certificate(tls_channel_tPtr tls_ctx)
+{
+    SSL_CTX *ctx = tls_ctx->g_ctx;
+    /*
+        For the SSL server:
+        Server's own certificate (mandatory)
+        CA certificate (optional)
+
+        * For the SSL client:
+        CA certificate (mandatory)
+        Client's own certificate (optional)
+    */
+    if ( __does_need_to_verify_peer(tls_ctx) == (1) )  
+    {
+        /* Load the RSA CA certificate into the SSL_CTX structure */
+        /* This will allow this client to verify the server's     */
+        /* certificate.                                           */
+        if ( tls_ctx->g_ca_file != NULL )  {
+            INF("SSL_CTX_load_verify_locations locations ca_file %s", tls_ctx->g_ca_file);
+            if (!SSL_CTX_load_verify_locations(ctx, tls_ctx->g_ca_file, NULL)) {
+                ERR("Unable to SSL_CTX_load_verify_locations()");
+                return -1;
+            }
+        } else if ( tls_ctx->g_ca_path != NULL )  {
+            INF("SSL_CTX_load_verify_locations locations ca_path %s", tls_ctx->g_ca_path);
+            if (!SSL_CTX_load_verify_locations(ctx, NULL, tls_ctx->g_ca_path)) {
+                ERR("Unable to SSL_CTX_load_verify_locations()");
+                return -1;
+            }
+        }
+ 
+        /* Set flag in context to require peer (server) certificate */
+        /* verification */
+#if 1        
+        SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, verify_callback);
+#else
+        SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
+#endif
+ 
+        SSL_CTX_set_verify_depth(ctx, 8);
+	}
+    
+    return 0;
+}
+
+
+
+static int check_peer_certificate(tls_channel_tPtr tls_ctx)
+{
+  X509 *cert;
+  char *line;
+  cert = SSL_get_peer_certificate(tls_ctx->g_ssl); /* get the server's certificate */
+  if ( cert == NULL ) {
+      INF("Info: No peer certificates configured");
+  } 
+  else {
+      INF("Server certificates:");
+      line = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0);
+      INF("Subject: %s", line);
+      free(line);       /* free the malloc'ed string */
+      line = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0);
+      INF("Issuer: %s", line);
+      free(line);       /* free the malloc'ed string */
+  }
+
+#if 1
+    if ( __does_need_to_verify_peer(tls_ctx) == (1) )  
+	{
+		int verifyResult = SSL_get_verify_result(tls_ctx->g_ssl);
+		if (verifyResult != X509_V_OK){
+			ERR("Certificate doesn't verify, result=%d\n", verifyResult);
+			return -1;
+		}
+	}
+#endif
+    return 0;
+}
+/////////////////////////////////////////////////
+
+
+int net_tls_release(tls_channel_tPtr tls_ctx)
+{
+  if ( tls_ctx->g_ssl != NULL ) {
+    SSL_free(tls_ctx->g_ssl);
+    tls_ctx->g_ssl = NULL;
+    INF("Closed SSL Session");
+  }
+
+  if ( tls_ctx->g_ctx != NULL ) {
+    SSL_CTX_free(tls_ctx->g_ctx);
+      tls_ctx->g_ctx = NULL;
+      tls_ctx->g_ctx = NULL;
+      INF("Closed SSL Context");
+  }
+
+  return 0;
+}
+
+////////////////////////////////////
+#include <fcntl.h>
+int set_sock_block_mode(int fd)
+{
+	////////////////////////////////////
+    // 소켓을 블로킹 모드로 설정
+    int flags = fcntl(fd, F_GETFL, 0);
+    if (flags == -1){
+        ERR("fcntl 1");
+		return -1;
+	}
+
+    if (fcntl(fd, F_SETFL, flags & ~O_NONBLOCK) == -1) {
+        ERR("fcntl 2");
+		return -1;
+	}
+
+	return 0;
+}
+////////////////////////////////////
+
+int net_tls_open_socket_n_bind_with_ip(connection_tPtr ctx, char *ipaddr)
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+  tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
+
+    // SSL 라이브러리 초기화
+    if ( init_ssl_lib() < 0 )    {
+        return -1;
+    }
+
+    // SSL 컨텍스트 초기화
+    tls_ctx->g_ctx = init_ssl_context();
+    if ( tls_ctx->g_ctx == NULL )  {
+        net_tls_release(tls_ctx);
+        return -1;
+    }
+
+    // SSL 검증환경 설정
+    if ( init_ssl_certificate(tls_ctx) < 0 )  {
+        ERR("fail init_ssl_certificate");
+        net_tls_release(tls_ctx);
+        return -1;
+    }
+
+    // SSL세션 생성
+    tls_ctx->g_ssl = SSL_new(tls_ctx->g_ctx);
+    if ( tls_ctx->g_ssl == NULL )  {
+        ERR("fail SSL_new");
+        net_tls_release(tls_ctx);
+        return -1;
+    }
+
+  // open TCP 소켓
+  int rc = net_tcp_open_socket(ctx);
+  if ( rc < 0 ) {
+    ERR("fail net_tcp_open_socket()");
+    net_tls_release(tls_ctx);
+    return -1;
+  }
+
+
+	////////////////////////////////////
+    // 소켓을 블로킹 모드로 설정
+	set_sock_block_mode(tcp_ctx->sock);
+
+
+  // TCP 소켓 할당
+  SSL_set_fd(tls_ctx->g_ssl, tcp_ctx->sock);    /* attach the socket descriptor */
+
+  // TCP 소켓을 로컬IP주소의 NIC에 바인딩
+  if ( ipaddr != NULL )    {
+    struct sockaddr_in localaddr;
+    memset(&localaddr, 0x00, sizeof(struct sockaddr_in));
+    localaddr.sin_family = AF_INET;
+    localaddr.sin_addr.s_addr = inet_addr(ipaddr);
+
+    bind(tcp_ctx->sock, (struct sockaddr*)&localaddr, sizeof(localaddr));
+
+    DBG("socket[%d] binded with ip_addr [%s]", tcp_ctx->sock, ipaddr);
+  }
+
+  return 0;
+}
+
+
+int net_tls_open_socket(connection_tPtr ctx)
+{
+    tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+
+    return net_tls_open_socket_n_bind_with_ip(ctx, NULL);
+}
+
+
+
+int net_tls_set_trusred_ca_file(connection_tPtr ctx, char *ca_file) 
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+
+  tls_ctx->g_ca_file = ca_file;
+  tls_ctx->g_ca_path = NULL;
+
+  INF("ca_file =  [%s]", tls_ctx->g_ca_file);
+
+  return 0;
+}
+
+int net_tls_set_trusred_ca_path(connection_tPtr ctx, char *ca_path) 
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+
+  tls_ctx->g_ca_path = ca_path;
+  tls_ctx->g_ca_file = NULL;
+
+  INF("ca_path =  [%s]", tls_ctx->g_ca_path);
+
+  return 0;
+}
+
+
+
+
+int net_tls_disconnect(connection_tPtr ctx)
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+  tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
+
+  if ( tcp_ctx->sock > 0 )  {
+      close(tcp_ctx->sock);
+      tcp_ctx->sock = 0;
+      INF("Closed socket[%d]", tcp_ctx->sock);
+  }
+
+  net_tls_release(tls_ctx);
+
+  return 0;
+}
+
+
+
+int net_tls_connect_ipv4(connection_tPtr ctx, char *host_addr_str, uint16_t port) 
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+  tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
+
+  DBG("tcp_ctx->sock=[%d]", tcp_ctx->sock);
+
+  // connect TCP/IP
+  int rc = net_tcp_connect_ipv4(ctx, host_addr_str, port);
+  if ( rc < 0 ) {
+    ERR("fail net_tcp_connect_ipv4()");
+    net_tls_disconnect(ctx);
+    return -1;
+  }
+
+
+	////////////////////////////////////
+    // 소켓을 블로킹 모드로 설정
+	set_sock_block_mode(tcp_ctx->sock);
+
+  /* ---------------------------------------------------------- *
+   * Try to SSL-connect here, returns 1 for success             *
+   * ---------------------------------------------------------- */
+  rc = SSL_connect(tls_ctx->g_ssl);
+  if ( rc != 1 ){
+    /*
+	// @Arm ubuntu 18 64 2021-06-28
+	///../../../../src/deps/netio/tls_openssl.c_imp:341:103: error: dereferencing pointer to incomplete type ‘SSL {aka struct ssl_st}’
+    ERR("Could not build SSL_connect; error=[%s]", (char*)X509_verify_cert_error_string(tls_ctx->g_ssl->error));
+	////////
+	ERR("Could not build SSL_connect; error=[%s]", X509_verify_cert_error_string(tls_ctx->g_ssl->error));
+    */
+
+	ERR("Could not build SSL_connect.");
+
+	int errcode = SSL_get_error(tls_ctx->g_ssl, rc); 
+	switch(errcode) 
+	 { 
+		case SSL_ERROR_NONE: break;        // Cannot happen if err <=0 
+		case SSL_ERROR_ZERO_RETURN: ERR("SSL connect returned 0.");break; 
+		case SSL_ERROR_WANT_READ: ERR("SSL connect: Read Error.");break; 
+		case SSL_ERROR_WANT_WRITE: ERR("SSL connect: Write Error.");break; 
+		case SSL_ERROR_WANT_CONNECT: ERR("SSL connect: Error connect."); break; 
+		case SSL_ERROR_WANT_ACCEPT: ERR("SSL connect: Error accept."); break; 
+		case SSL_ERROR_WANT_X509_LOOKUP: ERR("SSL connect error: X509 lookup."); break; 
+		case SSL_ERROR_SYSCALL: ERR("SSL connect: Error in system call."); break; 
+		case SSL_ERROR_SSL: ERR("SSL connect: Protocol Error."); break; 
+		default: ERR("Failed SSL connect."); 
+	 } 
+
+	net_tls_disconnect(ctx);
+    return -1;
+  }
+  else {
+    DBG("Successfully enabled SSL/TLS session to [%s:%d]", host_addr_str, port);
+  }
+
+
+  rc = check_peer_certificate(tls_ctx);   
+  if ( rc < 0 ) {
+    ERR("fail verify_peer_certificate()");
+    net_tls_disconnect(ctx);
+    return -1;
+  }
+
+  tls_ctx->g_connected = (1);
+
+  ctx->netChannelType = TLS;
+
+  DBG("Connected with cipher %s encryption", SSL_get_cipher(tls_ctx->g_ssl));
+  return 0;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+// SSL_write 함수를 루프를 사용하여 모든 데이터를 전송하는 함수
+static int ssl_write_all(SSL *ssl, const char *data, int data_length) {
+    int total_bytes_written = 0;
+    int bytes_written;
+
+    while (total_bytes_written < data_length) {
+        bytes_written = SSL_write(ssl, data + total_bytes_written, data_length - total_bytes_written);
+
+        if (bytes_written <= 0) {
+            int ssl_error = SSL_get_error(ssl, bytes_written);
+            if (ssl_error == SSL_ERROR_WANT_WRITE || ssl_error == SSL_ERROR_WANT_READ) {
+                // SSL_write가 블로킹되지 않도록 대기
+                continue;
+            } else {
+                ERR("SSL_write");
+            }
+        }
+
+  ERR("bytes_written = [%ld]", bytes_written);
+
+        total_bytes_written += bytes_written;
+    }
+
+  ERR("total_bytes_written = [%ld]", total_bytes_written);
+
+    return total_bytes_written;
+}
+
+
+
+int net_tls_send_buffer(connection_tPtr ctx)
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+  buffer_tPtr buff = (buffer_tPtr)&(ctx->send_buff);
+
+  //ssize_t sent_len = SSL_write(tls_ctx->g_ssl, buff->data, buff->length);       /* encrypt & send message */
+  
+  ssize_t sent_len = ssl_write_all(tls_ctx->g_ssl, buff->data, buff->length);       /* encrypt & send message */
+  DBG("sent_len = [%ld]", sent_len);
+
+  if ( buff->length != sent_len )
+  {
+    ERR("FAIL ssl_write_all; sent [%ld] bytes", sent_len);
+	return -1;
+  }
+
+  return sent_len;
+}
+
+
+
+
+int net_tls_recv_with_length(connection_tPtr ctx, char *recv_buff, int recv_len )
+{
+  tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+
+  // receive message.
+  size_t want_read_now = recv_len;
+  size_t total_length = 0;
+
+  do {
+    
+  	int count = SSL_read(tls_ctx->g_ssl, recv_buff + total_length, want_read_now); 
+
+    if (count < 0) {
+      ERR("recv error! %d", errno);
+      return -1;
+    } else if (count == 0) {
+      WRN("peer may closed TLS session");
+
+      close(tcp_ctx->sock);
+      tcp_ctx->sock = -1;
+      return -1;
+    }
+
+    total_length += (size_t)count;
+    want_read_now -= (size_t)count;
+
+    DBG("recv(): %d bytes.", count);
+
+  } while (total_length < recv_len);
+
+  return total_length;
+}
+
+int net_tls_recv_packet_with_header(connection_tPtr ctx)
+{
+  buffer_tPtr buff = (buffer_tPtr)&(ctx->recv_buff);
+
+  int len = net_tls_recv_with_length(ctx, &buff->data[0], ctx->head_len_bytes);
+  if ( len !=  ctx->head_len_bytes )  {
+    ERR ("FAIL read head bytes");
+  }
+  buff->length = len;
+
+  unsigned int packetLen = 0;
+
+  if ( len == 4 )  {
+    unsigned int len_tmp;
+    memcpy((char*)&len_tmp, &buff->data[0], 4);
+    packetLen = ntohl(len_tmp);
+  }
+  else if ( len == 2 )  {
+    unsigned short len_tmp;
+    memcpy((char*)&len_tmp, &buff->data[0], 2);
+    packetLen = ntohs(len_tmp);
+  }
+  else if ( len == 1 )  {
+    packetLen = (unsigned int)buff->data[0];
+  }
+  else {
+    ERR ("FAIL pars head length");
+    return -1;
+  }
+
+  DBG("packet length = [%d]", packetLen);
+
+  len = net_tls_recv_with_length(ctx, &buff->data[len], packetLen);
+  if ( len != packetLen )  {
+    ERR ("FAIL read packet");
+  }
+
+  buff->length += len;
+
+  DBG("Recv %ld bytes", buff->length);
+
+  return buff->length;
+}
+
+int net_tls_recv_buffer_one(connection_tPtr ctx)
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+  buffer_tPtr buff = (buffer_tPtr)&(ctx->recv_buff);
+
+	int read_len = SSL_read(tls_ctx->g_ssl, buff->data, IOBUFF_MAX_SIZE);         /* get reply & decrypt */
+  buff->length = read_len;
+  DBG("read_len = [%d]", read_len);
+
+  if (read_len < 0) {
+    ERR("recv error! %d", errno);
+    return -1;
+  } else if (read_len == 0) {
+    WRN("peer may closed TLS session");
+
+    tls_ctx->g_connected = -1;
+
+    return -1;
+  }
+
+
+  return read_len;
+}
+
+
+
+int net_tls_recv_buffer(connection_tPtr ctx)
+{
+  tls_channel_tPtr tls_ctx = (tls_channel_tPtr)&(ctx->tls_channel);
+  buffer_tPtr buff = (buffer_tPtr)&(ctx->recv_buff);
+
+  if ( ctx->head_len_bytes > 0  ) {
+    return net_tls_recv_packet_with_header(ctx);
+  }
+  else if ( ctx->enable_SOH == 1 )  {
+    ERR("Not implemented");
+    return -1;
+  } 
+
+	return net_tls_recv_buffer_one(ctx);
+
+}
+
+
+//////////////////////////////////////////
+
+/* ===============================
+ * > 0 : read event
+ * = 0 : timeout
+ * < 0 : error
+ * =============================== */
+int net_tls_available_timeout(connection_tPtr ctx, int seconds)
+{
+  tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
+
+	if ( tcp_ctx->sock < 0 )  {
+		ERR("invalid socket [%d] ", tcp_ctx->sock);
+    return -1;
+  }
+
+  return net_fd_available_for_read_timeout_msec(tcp_ctx->sock, seconds*1000);
+}
+
+int net_tls_available(connection_tPtr ctx)
+{
+  tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
+
+	if ( tcp_ctx->sock < 0 )  {
+		ERR("invalid socket [%d] ", tcp_ctx->sock);
+    return -1;
+  }
+
+  return net_fd_available_for_read_timeout_msec(tcp_ctx->sock, 1);
+}
+
+
+#endif  //HAVE_OPENSSL

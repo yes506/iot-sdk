@@ -1,0 +1,95 @@
+############################################
+MinGW = c:\Program Files\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32
+MinGW = z:\DATA\SanDISK\home\local\mingw\mingw32
+MinGW = z:\SanDISK\home\local\Windows\mingw32
+
+SHELL	= CMD.EXE
+#
+### HOWTO BUILD EXAMPLE ON COMMAND LINE
+# SET MINGW_PATH=c:\Program Files\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32
+# set "PATH=%MINGW_PATH%\bin\;%PATH%"
+# mingw32-make -f Makefile.MinGW32
+############################################
+
+CPP	= $(MinGW)/bin/g++.exe
+CC	= $(MinGW)/bin/gcc.exe
+AR	= $(MinGW)/bin/ar r
+RANLIB	= $(MinGW)/bin/ranlib
+
+RM	= DEL
+
+#####################################################
+# IoTMakers Device SDK Source Home
+#####################################################
+IM_PROJECT_HOME = ../../../..
+IM_SDK_HOME = $(IM_PROJECT_HOME)/src
+include $(IM_SDK_HOME)/Makefile.common
+
+CFLAGS += \
+	-fPIC \
+
+OFLAGS += \
+    -Wl,--stack,10000000 \
+
+LIBS += \
+	-L"$(MinGW)/i686-w64-mingw32/lib" \
+	"$(MinGW)/i686-w64-mingw32/lib/libws2_32.a" \
+
+ifeq ($(HAVE_OPENSSL),1)
+	CFLAGS += -DHAVE_OPENSSL
+	OFLAGS += -lssl -lcrypto
+endif
+
+ifeq ($(HAVE_THREAD),1)
+	CFLAGS += -DHAVE_THREAD
+	OFLAGS += -lpthread
+endif
+
+
+#####################################################
+# Dynamic Library (Windows DLL)
+#####################################################
+DLL_IMPL_SRC = $(wildcard $(IM_SDK_HOME)/dynamic-library/*.c)
+DLL_IMPL_OBJ = $(addprefix objs/,$(notdir $(DLL_IMPL_SRC:.c=.o)))
+VPATH += $(IM_SDK_HOME)/dynamic-library
+
+
+#####################################################
+# Sample Apps
+#####################################################
+SAMPLE_APP_SRC = $(IM_PROJECT_HOME)/samples/simple_app/simple_app_main.c
+SAMPLE_SIMPLE_APP_OBJ = $(addprefix objs/,$(notdir $(SAMPLE_APP_SRC:.c=.o)))
+VPATH += $(IM_PROJECT_HOME)/samples/simple_app
+
+SAMPLE_BIZ_APP_SRC = $(wildcard $(IM_PROJECT_HOME)/samples/biz_app/*.c)
+SAMPLE_BIZ_APP_OBJ = $(addprefix objs/,$(notdir $(SAMPLE_BIZ_APP_SRC:.c=.o)))
+VPATH += $(IM_PROJECT_HOME)/samples/biz_app
+
+#####################################################
+# Build Rule
+#####################################################
+all: \
+	libiotmakers-3rdparty-interface.a \
+	libiotmakers-3rdparty-interface.dll \
+	simple_app \
+
+
+libiotmakers-3rdparty-interface.a: $(IM_SDK_OBJS)
+	$(AR) ./libs/$@ $(IM_SDK_OBJS)
+
+libiotmakers-3rdparty-interface.dll: $(IM_SDK_OBJS) $(DLL_IMPL_OBJ)
+	${CC} -shared -o ./libs/$@ $(DLL_IMPL_OBJ)  $(IM_SDK_OBJS) ${OFLAGS} -Wl,-add-stdcall-alias ${LIBS} 
+
+simple_app: $(IM_SDK_OBJS) $(SAMPLE_SIMPLE_APP_OBJ)
+	${CC} -o ./bin/$@ $(SAMPLE_SIMPLE_APP_OBJ) $(IM_SDK_OBJS) ${OFLAGS} ${LIBS}
+
+
+#####################################################
+# Compile Rule
+#####################################################
+objs/%.o: %.c
+	${CC} -c -o $@ $< ${CFLAGS}
+
+clean:
+	$(RM) objs\* bin\* libs\* 
+

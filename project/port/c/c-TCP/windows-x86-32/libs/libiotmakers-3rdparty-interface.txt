@@ -1,0 +1,92 @@
+Microsoft (R) COFF/PE Dumper Version 14.29.30133.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file libs\libiotmakers-3rdparty-interface.dll
+
+File Type: DLL
+
+  Section contains the following exports for libiotmakers-3rdparty-interface.dll
+
+    00000000 characteristics
+    609CD152 time date stamp Thu May 13 16:12:18 2021
+        0.00 version
+           1 ordinal base
+          54 number of functions
+          54 number of names
+
+    ordinal hint RVA      name
+
+          1    0 0000189D ImAuthDevice
+          2    1 0000189D ImAuthDevice@16
+          3    2 000018E8 ImAuthSystem
+          4    3 000018E8 ImAuthSystem@16
+          5    4 0000183E ImConnect
+          6    5 0000183E ImConnect@4
+          7    6 0000178E ImConnectTo
+          8    7 0000178E ImConnectTo@12
+          9    8 00001868 ImDisconnect
+         10    9 00001868 ImDisconnect@4
+         11    A 0000170A ImInit
+         12    B 0000170A ImInit@4
+         13    C 00001969 ImMSleep
+         14    D 00001969 ImMSleep@8
+         15    E 00001933 ImPoll
+         16    F 00001933 ImPoll@4
+         17   10 00001774 ImRelease
+         18   11 00001774 ImRelease@4
+         19   12 00001AE7 ImResourceNotificationAppendResource
+         20   13 00001AE7 ImResourceNotificationAppendResource@12
+         21   14 00001A4B ImResourceNotificationInit
+         22   15 00001A4B ImResourceNotificationInit@4
+         23   16 00001B94 ImResourceNotificationSend
+         24   17 00001B94 ImResourceNotificationSend@4
+         25   18 0000205F ImResourceRetrieveAppendResource
+         26   19 0000205F ImResourceRetrieveAppendResource@12
+         27   1A 00001FD0 ImResourceRetrieveSetResource
+         28   1B 00001FD0 ImResourceRetrieveSetResource@12
+         29   1C 0000199E ImResourceSendNotification
+         30   1D 0000199E ImResourceSendNotification@12
+         31   1E 00001C8A ImSetOnResourceRetrieveAllRequestHandler
+         32   1F 00001C8A ImSetOnResourceRetrieveAllRequestHandler@8
+         33   20 00001C5D ImSetOnResourceRetrieveOneRequestHandler
+         34   21 00001C5D ImSetOnResourceRetrieveOneRequestHandler@8
+         35   22 00001C30 ImSetOnResourceSetRequestHandler
+         36   23 00001C30 ImSetOnResourceSetRequestHandler@8
+         37   24 00001FA3 ImSetOnSysResourceRetrieveAllRequestHandler
+         38   25 00001FA3 ImSetOnSysResourceRetrieveAllRequestHandler@8
+         39   26 00001F76 ImSetOnSysResourceRetrieveOneRequestHandler
+         40   27 00001F76 ImSetOnSysResourceRetrieveOneRequestHandler@8
+         41   28 00001F49 ImSetOnSysResourceSetRequestHandler
+         42   29 00001F49 ImSetOnSysResourceSetRequestHandler@8
+         43   2A 00001E00 ImSysResourceNotificationAppendResource
+         44   2B 00001E00 ImSysResourceNotificationAppendResource@12
+         45   2C 00001D64 ImSysResourceNotificationInit
+         46   2D 00001D64 ImSysResourceNotificationInit@4
+         47   2E 00001EAD ImSysResourceNotificationSend
+         48   2F 00001EAD ImSysResourceNotificationSend@4
+         49   30 00001CB7 ImSysResourceSendNotification
+         50   31 00001CB7 ImSysResourceSendNotification@12
+         51   32 000017D2 ImTurnCircuitBreakerOff
+         52   33 000017D2 ImTurnCircuitBreakerOff@4
+         53   34 00001808 ImTurnResponseWaitOff
+         54   35 00001808 ImTurnResponseWaitOff@4
+
+  Summary
+
+        1000 .CRT
+        2000 .bss
+        1000 .data
+        1000 .debug_abbrev
+        1000 .debug_aranges
+        1000 .debug_frame
+        2000 .debug_info
+        1000 .debug_line
+        1000 .debug_str
+        1000 .edata
+        5000 .eh_frame
+        1000 .idata
+        4000 .rdata
+        2000 .reloc
+       15000 .text
+        1000 .tls

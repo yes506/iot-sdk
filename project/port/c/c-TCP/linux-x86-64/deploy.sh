@@ -1,0 +1,5 @@
+IM_PROJECT_HOME=../../../..
+
+cp libs/*.so ${IM_PROJECT_HOME}/samples/c/c-TCP/linux-x86-64/
+
+cp ${IM_PROJECT_HOME}/src/dynamic-library/iotmakers_dll_impl.h ${IM_PROJECT_HOME}/samples/c/c-TCP/linux-x86-64/
