@@ -69,9 +69,6 @@ class IoTMakersDeviceClient:
 
 
 	def ImSetControlCallBackHandler(self, OnResourceSetRequestHandler=None, OnResourceRetrieveOneRequestHandler=None, OnResourceRetrieveAllRequestHandler=None):
-		print("====== the path of IotmakersStdDevicePy3 ======")
-		print(IotmakersStdDevicePy3)
-		print("====== the path of IotmakersStdDevicePy3 ======")
 		client.ImSetOnResourceSetRequestHandler(self.hndl, OnResourceSetRequestHandler);
 		client.ImSetOnResourceRetrieveOneRequestHandler(self.hndl, OnResourceRetrieveOneRequestHandler);
 		client.ImSetOnResourceRetrieveAllRequestHandler(self.hndl, OnResourceRetrieveAllRequestHandler);

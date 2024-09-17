@@ -25,18 +25,17 @@ class IoTMakersDeviceClient:
 		self.hndl = -1;
 
 	def ImInit(self, logLevel=1):
-		print("====== the path of IotmakersStdDevicePy3 ======")
-		print(IotmakersStdDevicePy3)
-		print("====== the path of IotmakersStdDevicePy3 ======")
+		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImInit start ======")
 		self.logLevel = logLevel;
 		self.hndl = client.ImInit(self.logLevel);
+		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImInit end ======")
 		return self.hndl;
 
 	def ImRelease(self):
 		client.ImRelease(self.hndl);
 
 	def ImConnectTo(self, serverIp, serverPort):
-		print("======== ImConnectTo start ========")
+		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImConnectTo start ======")
 		return client.ImConnectTo(self.hndl, serverIp, serverPort);
 
 	def ImDisconnect(self):
@@ -73,11 +72,11 @@ class IoTMakersDeviceClient:
 
 
 	def ImSetControlCallBackHandler(self, OnResourceSetRequestHandler=None, OnResourceRetrieveOneRequestHandler=None, OnResourceRetrieveAllRequestHandler=None):
-		print("======== ImSetControlCallBackHandler start ========")
+		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImSetControlCallBackHandler start ======")
 		client.ImSetOnResourceSetRequestHandler(self.hndl, OnResourceSetRequestHandler);
 		client.ImSetOnResourceRetrieveOneRequestHandler(self.hndl, OnResourceRetrieveOneRequestHandler);
 		client.ImSetOnResourceRetrieveAllRequestHandler(self.hndl, OnResourceRetrieveAllRequestHandler);
-		print("======== ImSetControlCallBackHandler success ========")
+		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImSetControlCallBackHandler end ======")
 
 
 	def ImResourceRetrieveSetResource(self, pktBody, resource_id, properties_in_json):
