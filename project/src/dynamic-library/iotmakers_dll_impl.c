@@ -113,6 +113,12 @@ int __stdcall ImRelease(int sess_hndl)
 
 int __stdcall ImConnectTo(int sess_hndl, char* ec_ip, int ec_port)
 {
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImConnectTo() =============")
+  INF("sess_hndl : [%d]", sess_hndl)
+  INF("ec_ip pointer : [%p]", ec_ip)
+  INF("ec_ip the first char value : [%c]", *ec_ip)
+  INF("ec_port : [%d]", ec_port)
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImConnectTo() =============")
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return -1;
@@ -314,6 +320,15 @@ int __stdcall ImResourceNotificationSend(int sess_hndl)
 
 EXPORT void __stdcall ImSetOnResourceSetRequestHandler(int sess_hndl, int(*func)(void *pktBody, char *dev_id, char *resource_id, char *properties_in_jstr))
 {
+
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceSetRequestHandler() =============")
+  INF("sess_hndl : [%d]", sess_hndl)
+  INF("func pointer : [%p]", func)
+  INF("func the first int value : [%d]", int(*func))
+  INF("dev_id first char value : [%c]", *dev_id)
+  INF("resource_id first char value : [%c]", *resource_id)
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceSetRequestHandler() =============")
+
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return;
@@ -324,6 +339,15 @@ EXPORT void __stdcall ImSetOnResourceSetRequestHandler(int sess_hndl, int(*func)
 
 EXPORT void __stdcall ImSetOnResourceRetrieveOneRequestHandler(int sess_hndl, int(*func)(void *pktBody, char *dev_id, char *resource_id))
 {
+
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceRetrieveOneRequestHandler() =============")
+  INF("sess_hndl : [%d]", sess_hndl)
+  INF("func pointer : [%p]", func)
+  INF("func the first int value : [%d]", int(*func))
+  INF("dev_id first char value : [%c]", *dev_id)
+  INF("resource_id first char value : [%c]", *resource_id)
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceRetrieveOneRequestHandler() =============")
+
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return;
@@ -334,6 +358,14 @@ EXPORT void __stdcall ImSetOnResourceRetrieveOneRequestHandler(int sess_hndl, in
 
 EXPORT void __stdcall ImSetOnResourceRetrieveAllRequestHandler(int sess_hndl, int(*func)(void *pktBody, char *dev_id))
 {
+
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceRetrieveAllRequestHandler() =============")
+  INF("sess_hndl : [%d]", sess_hndl)
+  INF("func pointer : [%p]", func)
+  INF("func the first int value : [%d]", int(*func))
+  INF("dev_id first char value : [%c]", *dev_id)
+  INF("============= project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceRetrieveAllRequestHandler() =============")
+
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return;
