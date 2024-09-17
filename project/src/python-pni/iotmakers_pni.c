@@ -257,17 +257,21 @@ static PyObject* ImAuthSystem(PyObject* self, PyObject* args)
 
 static PyObject* ImPoll(PyObject* self, PyObject* args) 
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImPoll start!!! ===========================");
 	int hndl = -1;
 	PyArg_ParseTuple(args, "i", &hndl);
+	PyObject_Print(args, stdout, 0);
 
 	int rc = -1;
 
-  im_client_tPtr pclient = sesspool_sess(hndl);
-  if ( pclient == NULL )  {
-	return Py_BuildValue("i", rc);
-  }
+  	im_client_tPtr pclient = sesspool_sess(hndl);
+  	if ( pclient == NULL )  {
+		INF("=========================== project/src/python-pni/iotmakers_pni.c if pclient == NULL to Py_BuildValue() !!! ===========================");
+		return Py_BuildValue("i", rc);
+  	}
 
-  rc = im_poll(pclient);
+  	rc = im_poll(pclient);
+  	INF("=========================== project/src/python-pni/iotmakers_pni.c ImPoll if pclient != NULL to Py_BuildValue() !!! ===========================");
 	return Py_BuildValue("i", rc);
 }
 
