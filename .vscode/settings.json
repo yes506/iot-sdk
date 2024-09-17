@@ -3,6 +3,7 @@
         "body.h": "c",
         "head.h": "c",
         "unistd.h": "c",
-        "python.h": "c"
+        "python.h": "c",
+        "*.c_imp": "c"
     }
 }

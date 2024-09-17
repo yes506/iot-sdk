@@ -517,10 +517,16 @@ int net_tcp_available(connection_tPtr ctx)
 {
   tcp_channel_tPtr tcp_ctx = (tcp_channel_tPtr)&(ctx->tcp_channel);
 
+  INF("================= project/src/deps/netio/tcp_io.c net_tcp_available() start !!! =================");
+
+  INF("tcp_ctx->sock value : [%d]", tcp_ctx->sock);
+
 	if ( tcp_ctx->sock < 0 )  {
 		ERR("invalid socket [%d] ", tcp_ctx->sock);
     return -1;
   }
+
+  INF("================= project/src/deps/netio/tcp_io.c net_tcp_available() end !!! =================");
 
   return net_fd_available_for_read_timeout_msec(tcp_ctx->sock, 1);
 }
