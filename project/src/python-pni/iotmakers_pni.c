@@ -617,6 +617,7 @@ static int OnResourceRetrieveAllRequestHandler(void *pktBody, char *dev_id)
 // Device API
 static PyObject* ImSetOnResourceSetRequestHandler(PyObject* self, PyObject* args)
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceSetRequestHandler start!!! ===========================")
 	int hndl = -1;
     PyObject *pyFunctionObj;
 	PyArg_ParseTuple(args, "iO", &hndl, &pyFunctionObj);
@@ -641,11 +642,14 @@ static PyObject* ImSetOnResourceSetRequestHandler(PyObject* self, PyObject* args
 		rc = 0;
     }
 
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceSetRequestHandler end!!! ===========================")
+
 	return Py_BuildValue("i", rc);
 }
 
 static PyObject* ImSetOnResourceRetrieveOneRequestHandler(PyObject* self, PyObject* args)
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceRetrieveOneRequestHandler start!!! ===========================")
 	int hndl = -1;
     PyObject *pyFunctionObj;
 	PyArg_ParseTuple(args, "iO", &hndl, &pyFunctionObj);
@@ -670,10 +674,13 @@ static PyObject* ImSetOnResourceRetrieveOneRequestHandler(PyObject* self, PyObje
 		rc = 0;
     }
 
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceRetrieveOneRequestHandler end!!! ===========================")
+
 	return Py_BuildValue("i", rc);
 }
 static PyObject* ImSetOnResourceRetrieveAllRequestHandler(PyObject* self, PyObject* args)
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceRetrieveAllRequestHandler start!!! ===========================")
 	int hndl = -1;
     PyObject *pyFunctionObj;
 	PyArg_ParseTuple(args, "iO", &hndl, &pyFunctionObj);
@@ -698,6 +705,8 @@ static PyObject* ImSetOnResourceRetrieveAllRequestHandler(PyObject* self, PyObje
 		rc = 0;
     }
 
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceRetrieveAllRequestHandler end!!! ===========================")
+
 	return Py_BuildValue("i", rc);
 }
 //
@@ -708,6 +717,7 @@ static PyObject* ImSetOnResourceRetrieveAllRequestHandler(PyObject* self, PyObje
 // System API
 static PyObject* ImSetOnSysResourceSetRequestHandler(PyObject* self, PyObject* args)
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnSysResourceSetRequestHandler start!!! ===========================")
 	int hndl = -1;
     PyObject *pyFunctionObj;
 	PyArg_ParseTuple(args, "iO", &hndl, &pyFunctionObj);
@@ -732,11 +742,14 @@ static PyObject* ImSetOnSysResourceSetRequestHandler(PyObject* self, PyObject* a
 		rc = 0;
     }
 
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnSysResourceSetRequestHandler end!!! ===========================")
+
 	return Py_BuildValue("i", rc);
 }
 
 static PyObject* ImSetOnSysResourceRetrieveOneRequestHandler(PyObject* self, PyObject* args)
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnSysResourceRetrieveOneRequestHandler start!!! ===========================")
 	int hndl = -1;
     PyObject *pyFunctionObj;
 	PyArg_ParseTuple(args, "iO", &hndl, &pyFunctionObj);
@@ -761,10 +774,13 @@ static PyObject* ImSetOnSysResourceRetrieveOneRequestHandler(PyObject* self, PyO
 		rc = 0;
     }
 
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnSysResourceRetrieveOneRequestHandler end!!! ===========================")
+
 	return Py_BuildValue("i", rc);
 }
 static PyObject* ImSetOnSysResourceRetrieveAllRequestHandler(PyObject* self, PyObject* args)
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnSysResourceRetrieveAllRequestHandler start!!! ===========================")
 	int hndl = -1;
     PyObject *pyFunctionObj;
 	PyArg_ParseTuple(args, "iO", &hndl, &pyFunctionObj);
@@ -788,6 +804,8 @@ static PyObject* ImSetOnSysResourceRetrieveAllRequestHandler(PyObject* self, PyO
 		pclient->OnSysResourceRetrieveAllRequestHandler = OnResourceRetrieveAllRequestHandler;
 		rc = 0;
     }
+
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnSysResourceRetrieveAllRequestHandler end!!! ===========================")
 
 	return Py_BuildValue("i", rc);
 }

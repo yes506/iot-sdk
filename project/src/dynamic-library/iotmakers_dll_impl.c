@@ -314,7 +314,6 @@ int __stdcall ImResourceNotificationSend(int sess_hndl)
 
 EXPORT void __stdcall ImSetOnResourceSetRequestHandler(int sess_hndl, int(*func)(void *pktBody, char *dev_id, char *resource_id, char *properties_in_jstr))
 {
-  INF("=========================== project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceSetRequestHandler ===========================")
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return;
@@ -325,7 +324,6 @@ EXPORT void __stdcall ImSetOnResourceSetRequestHandler(int sess_hndl, int(*func)
 
 EXPORT void __stdcall ImSetOnResourceRetrieveOneRequestHandler(int sess_hndl, int(*func)(void *pktBody, char *dev_id, char *resource_id))
 {
-  INF("=========================== project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceRetrieveOneRequestHandler ===========================")
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return;
@@ -336,7 +334,6 @@ EXPORT void __stdcall ImSetOnResourceRetrieveOneRequestHandler(int sess_hndl, in
 
 EXPORT void __stdcall ImSetOnResourceRetrieveAllRequestHandler(int sess_hndl, int(*func)(void *pktBody, char *dev_id))
 {
-  INF("=========================== project/src/dynamic-library/iotmakers_dll_impl.c ImSetOnResourceRetrieveAllRequestHandler ===========================")
   im_client_tPtr pclient = sesspool_sess(sess_hndl);
   if ( pclient == NULL )  {
     return;
