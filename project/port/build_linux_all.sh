@@ -6,7 +6,7 @@ build_in_dir() {
 	./build-py3.sh clean
 	./build-py3.sh
 	./deploy.sh
-	./build.sh clean
+	./build-py3.sh clean
 	popd
 }
 
