@@ -398,6 +398,7 @@ static PyObject* ImResourceNotificationAppendResource(PyObject* self, PyObject* 
 
 static PyObject* ImResourceNotificationSend(PyObject* self, PyObject* args) 
 {
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImResourceNotificationSend start!!! ===========================");
 	int hndl = -1;
 	PyArg_ParseTuple(args, "i", &hndl);
 
@@ -414,6 +415,8 @@ static PyObject* ImResourceNotificationSend(PyObject* self, PyObject* args)
 		ERR("fail im_resource_notification_send()\n");
 		return Py_BuildValue("i", rc);
 	}
+
+	INF("=========================== project/src/python-pni/iotmakers_pni.c ImResourceNotificationSend end!!! ===========================");
 
 	return Py_BuildValue("i", rc);
 }
