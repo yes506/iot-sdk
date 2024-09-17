@@ -131,6 +131,8 @@ int netio_available_timeout(connection_tPtr ctx, int seconds)
 
 int netio_available(connection_tPtr ctx)
 {
+  INF("====================== project/src/deps/netio/netio.c netio_available start !!! ======================");
+
   int rc = -1;
 
   switch (ctx->netChannelType)  {
@@ -140,9 +142,11 @@ int netio_available(connection_tPtr ctx)
     break;  
 #else
   case TCP_IPv4:
+  INF("====================== ctx->netChannelType == TCP_IPv$ ======================");
     rc = net_tcp_available(ctx);
     break;  
   case UDP_IPv4:
+  INF("====================== ctx->netChannelType == UDP_IPv$ ======================");
     rc = net_udp_available(ctx);
     break;  
 #endif
@@ -160,6 +164,8 @@ int netio_available(connection_tPtr ctx)
 #endif
 
   }
+
+  INF("====================== project/src/deps/netio/netio.c netio_available end !!! ======================");
 
   return rc;
 }

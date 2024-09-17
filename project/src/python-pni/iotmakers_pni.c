@@ -259,7 +259,6 @@ static PyObject* ImPoll(PyObject* self, PyObject* args)
 {
 	INF("=========================== project/src/python-pni/iotmakers_pni.c ImPoll start!!! ===========================");
 	int hndl = -1;
-	PyArg_ParseTuple(args, "i", &hndl);
 	PyObject_Print(args, stdout, 0);
 
 	int rc = -1;
