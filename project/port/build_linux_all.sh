@@ -21,7 +21,7 @@ build_in_dir() {
 # build_in_dir "c/c-MQTT/linux-x86-64"
 # build_in_dir "c/c-MQTT/linux-x86-ubc222-yocto"
 
-build_in_dir "c/c-TCP/linux-std"
+# build_in_dir "c/c-TCP/linux-std"
 # build_in_dir "c/c-TCP/linux-x86-32"
 build_in_dir "c/c-TCP/linux-x86-64"
 # build_in_dir "c/c-TCP/linux-x86-ubc222-yocto"
