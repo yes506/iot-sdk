@@ -222,7 +222,7 @@ typedef enum {
 	TERMIO = 3,
 	TLS = 4,
 	MQTT_TCP_IPv4 = 5,
-    HTTP_TCP_IPv4 = 6
+  HTTP_TCP_IPv4 = 6
 } NetChannelType;
 
 
