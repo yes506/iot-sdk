@@ -643,11 +643,14 @@ static PyObject* ImSetOnResourceSetRequestHandler(PyObject* self, PyObject* args
 		return Py_BuildValue("i", rc);
     }
     else {
+		INF("=========================== pyFunctionObj is allocated to pyOnResourceSetRequestHandler ===========================");
+		INF("=========================== pclient == NULL ? [%d] ===========================", (pclient == NULL));
         pyOnResourceSetRequestHandler = pyFunctionObj;
 		pclient->OnResourceSetRequestHandler = OnResourceSetRequestHandler;
 		rc = 0;
     }
 
+	INF("=========================== rc is [%d] ===========================", rc);
 	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceSetRequestHandler end!!! ===========================");
 
 	return Py_BuildValue("i", rc);
@@ -675,11 +678,14 @@ static PyObject* ImSetOnResourceRetrieveOneRequestHandler(PyObject* self, PyObje
 		return Py_BuildValue("i", rc);
     }
     else {
+		INF("=========================== pyFunctionObj is allocated to pyOnResourceRetrieveOneRequestHandler ===========================");
+		INF("=========================== pclient == NULL ? [%d] ===========================", (pclient == NULL));
         pyOnResourceRetrieveOneRequestHandler = pyFunctionObj;
 		pclient->OnResourceRetrieveOneRequestHandler = OnResourceRetrieveOneRequestHandler;
 		rc = 0;
     }
 
+	INF("=========================== rc is [%d] ===========================", rc);
 	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceRetrieveOneRequestHandler end!!! ===========================");
 
 	return Py_BuildValue("i", rc);
@@ -706,11 +712,14 @@ static PyObject* ImSetOnResourceRetrieveAllRequestHandler(PyObject* self, PyObje
 		return Py_BuildValue("i", rc);
     }
     else {
+		INF("=========================== pyFunctionObj is allocated to pyOnResourceRetrieveAllRequestHandler ===========================");
+		INF("=========================== pclient == NULL ? [%d] ===========================", (pclient == NULL));
         pyOnResourceRetrieveAllRequestHandler = pyFunctionObj;
 		pclient->OnResourceRetrieveAllRequestHandler = OnResourceRetrieveAllRequestHandler;
 		rc = 0;
     }
 
+	INF("=========================== rc is [%d] ===========================", rc);
 	INF("=========================== project/src/python-pni/iotmakers_pni.c ImSetOnResourceRetrieveAllRequestHandler end!!! ===========================");
 
 	return Py_BuildValue("i", rc);

@@ -72,11 +72,9 @@ class IoTMakersDeviceClient:
 
 
 	def ImSetControlCallBackHandler(self, OnResourceSetRequestHandler=None, OnResourceRetrieveOneRequestHandler=None, OnResourceRetrieveAllRequestHandler=None):
-		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImSetControlCallBackHandler start ======")
 		client.ImSetOnResourceSetRequestHandler(self.hndl, OnResourceSetRequestHandler);
 		client.ImSetOnResourceRetrieveOneRequestHandler(self.hndl, OnResourceRetrieveOneRequestHandler);
 		client.ImSetOnResourceRetrieveAllRequestHandler(self.hndl, OnResourceRetrieveAllRequestHandler);
-		print("====== project/samples/python/python-TCP/linux-x86-64/IoTMakersDeviceClient ImSetControlCallBackHandler end ======")
 
 
 	def ImResourceRetrieveSetResource(self, pktBody, resource_id, properties_in_json):
