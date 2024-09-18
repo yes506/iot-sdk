@@ -157,10 +157,10 @@ def iot_sample_run():
     while True:
 
         print("ImConnectTo()...", IM_SERVER_ADDR, IM_SERVER_PORT);
-        # rc = imClient.ImConnectTo(IM_SERVER_ADDR, IM_SERVER_PORT);
-        # if rc < 0 :
-        #     imClient.ImRelease();
-        #     return;
+        rc = imClient.ImConnectTo(IM_SERVER_ADDR, IM_SERVER_PORT);
+        if rc < 0 :
+            imClient.ImRelease();
+            return;
 
 
         print("ImAuthDevice()...", IM_DEV_ID, IM_DEV_PW, IM_DEV_GW);
