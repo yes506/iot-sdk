@@ -138,7 +138,7 @@ def example_resource_send_notification():
 ##########################################
 def iot_sample_run():
     
-    IM_SERVER_ADDR = "dev-gw-iotmakers.cloud.kt.com";
+    IM_SERVER_ADDR = "127.0.0.1";
     IM_SERVER_PORT = 30105;
     IM_DEV_ID = "__testbyw111__";
     IM_DEV_PW = "12312";
