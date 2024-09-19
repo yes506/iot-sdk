@@ -360,7 +360,7 @@ static void __resource_set_request_default_handler(IMPacketBodyPtr pktBody, char
 }
 
 void im_packet525_request_handler_simple(im_client_tPtr cli, IMPacketPtr req)
-{
+{ 
 	int rc = -1;
 	char dev_id[64];
 	char resource_id[64];
