@@ -152,18 +152,21 @@ int im_resource_notification_init(im_client_tPtr cli)
 
 int im_resource_notification_append_resource(im_client_tPtr cli, char *resource_id, char *properties_in_json_str)
 {
+	INF("index 0 value of cli->dev_id: [%c]", (cli->dev_id)[0]);
 	if ( __is_string_valid(cli->dev_id) != (1) )
 	{
 	  ERR("Invalid cli->dev_id");
 	  return -1;
 	}
 
+	INF("index 0 value of resource_id: [%c]", resource_id[0]);
 	if ( __is_string_valid(resource_id) != (1) )
 	{
 	  ERR("Invalid resource_id");
 	  return -1;
 	}
 
+	INF("index 0 value of properties_in_json_str: [%c]", properties_in_json_str[0]);
 	if ( __is_string_valid(properties_in_json_str) != (1) )
 	{
 	  ERR("Invalid properties_in_json_str");

@@ -142,7 +142,7 @@ static PyObject* ImConnectTo(PyObject* self, PyObject* args)
 	int hndl = -1;
 	char *ec_ip;
 	int ec_port;
-	INF("hndl: [%d], ec_ip: [%s], ec_port: [%d]", hndl, ec_ip, ec_port);
+	INF("hndl: [%d], ec_ip: [%c][%c][%c][%c][%c], ec_port: [%d]", hndl, ec_ip[0], ec_ip[1], ec_ip[2], ec_ip[3], ec_ip[4], ec_port);
 	PyArg_ParseTuple(args, "isi", &hndl, &ec_ip, &ec_port);
 
   im_client_tPtr pclient = sesspool_sess(hndl);
@@ -219,7 +219,7 @@ static PyObject* ImAuthDevice(PyObject* self, PyObject* args)
 	char *im_dev_id;
 	char *im_dev_pw;
 	char *im_dev_gw;
-	INF("hndl: [%d], im_dev_id: [%s], im_dev_pw: [%s], im_dev_gw: [%s]", hndl, im_dev_id, im_dev_pw, im_dev_gw);
+	INF("hndl: [%d], im_dev_id: [%c], im_dev_pw: [%c], im_dev_gw: [%c]", hndl, im_dev_id[0], im_dev_pw[0], im_dev_gw[0]);
 	PyArg_ParseTuple(args, "isss", &hndl, &im_dev_id, &im_dev_pw, &im_dev_gw);
 
 	int rc = -1;
