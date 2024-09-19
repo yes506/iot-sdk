@@ -229,9 +229,9 @@ static PyObject* ImAuthDevice(PyObject* self, PyObject* args)
 	return Py_BuildValue("i", rc);
   }
 
-  INF("============================== calling im_auth_device()... start!!! ==============================")
+  INF("============================== calling im_auth_device()... start!!! ==============================");
   rc = im_auth_device(pclient, im_dev_id, im_dev_pw, im_dev_gw);
-  INF("============================== calling im_auth_device()... end!!! ==============================")
+  INF("============================== calling im_auth_device()... end!!! ==============================");
 
 	return Py_BuildValue("i", rc);
 }
