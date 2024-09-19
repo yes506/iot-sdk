@@ -4,6 +4,7 @@
         "head.h": "c",
         "unistd.h": "c",
         "python.h": "c",
-        "*.c_imp": "c"
+        "*.c_imp": "c",
+        "__locale": "c"
     }
 }

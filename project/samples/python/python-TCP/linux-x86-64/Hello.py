@@ -138,11 +138,11 @@ def example_resource_send_notification():
 ##########################################
 def iot_sample_run():
     
-    IM_SERVER_ADDR = "10.241.238.4";
-    IM_SERVER_PORT = 30105;
-    IM_DEV_ID = "__testbyw111__";
-    IM_DEV_PW = "12312";
-    IM_DEV_GW = "KT_3RD_BYW";
+    IM_SERVER_ADDR = "152.67.212.186";
+    IM_SERVER_PORT = 30030;
+    IM_DEV_ID = "EMUL_TEST";
+    IM_DEV_PW = "1234";
+    IM_DEV_GW = "emulTest";
     IM_LOGLEVEL = 3;    # 1:ERR, 2:INFO, 3:DEBUG
 
 
