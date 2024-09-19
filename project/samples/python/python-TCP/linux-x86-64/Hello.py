@@ -176,9 +176,9 @@ def iot_sample_run():
                 break;
 
             # 리소스 전송 예제
-            rc = example_resource_send_notification();
-            if rc < 0 :
-                break;
+            # rc = example_resource_send_notification();
+            # if rc < 0 :
+            #     break;
 
             imClient.ImMSleep(1000);
 
