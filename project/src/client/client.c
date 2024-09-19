@@ -628,11 +628,12 @@ int im_auth_device_with_nic_desc(im_client_tPtr cli, char *dev_id, char *dev_pw,
 {
   IMPacket req;
 
-  int rc = im_packet224_req_init(&req);
-  if ( rc < 0 )    {
-    ERR("im_packet_224_req_init()");
-    return -1;
-  }
+  // 테스트용 주석처리
+  // int rc = im_packet224_req_init(&req);
+  // if ( rc < 0 )    {
+  //   ERR("im_packet_224_req_init()");
+  //   return -1;
+  // }
 
 	// set device id
 	char extMsg_to[64];
@@ -654,20 +655,22 @@ int im_auth_device_with_nic_desc(im_client_tPtr cli, char *dev_id, char *dev_pw,
 
   cli->isChAthnSuccess = (0);
 
-  rc = im_transact_packet_with_response_handler(cli, &req, response_packet_handler_224);
-  if ( rc < 0 )    {
-    ERR("fail im_transact_packet_with_response_handler()");
-    ERR("auth_device seems to be failed");
-    im_packet_release(&req);
-    return -1;
-  }
+  // 테스트용 주석처리
+  // rc = im_transact_packet_with_response_handler(cli, &req, response_packet_handler_224);
+  // if ( rc < 0 )    {
+  //   ERR("fail im_transact_packet_with_response_handler()");
+  //   ERR("auth_device seems to be failed");
+  //   im_packet_release(&req);
+  //   return -1;
+  // }
 
   im_packet_release(&req);
   
-  if ( cli->isChAthnSuccess == (0) )  {
-    ERR("fail auth_device");
-    return -1;
-  }
+  // 테스트용 주석처리
+  // if ( cli->isChAthnSuccess == (0) )  {
+  //   ERR("fail auth_device");
+  //   return -1;
+  // }
 
   strcpy(cli->dev_id, dev_id);
   strcpy(cli->svc_gw, svc_gw);

@@ -164,11 +164,11 @@ def iot_sample_run():
 
 
         print("ImAuthDevice()...", IM_DEV_ID, IM_DEV_PW, IM_DEV_GW);
-        # rc = imClient.ImAuthDevice(IM_DEV_ID, IM_DEV_PW, IM_DEV_GW);
-        # if rc < 0 :
-        #     imClient.ImDisconnect();
-        #     imClient.ImRelease();
-        #     return;
+        rc = imClient.ImAuthDevice(IM_DEV_ID, IM_DEV_PW, IM_DEV_GW);
+        if rc < 0 :
+            imClient.ImDisconnect();
+            imClient.ImRelease();
+            return;
 
         while True:
             rc = imClient.ImPoll();
