@@ -140,9 +140,9 @@ def iot_sample_run():
     
     IM_SERVER_ADDR = "152.67.212.186";
     IM_SERVER_PORT = 30030;
-    IM_DEV_ID = "EMUL_TEST";
+    IM_DEV_ID = "emulTest";
     IM_DEV_PW = "1234";
-    IM_DEV_GW = "emulTest";
+    IM_DEV_GW = "EMUL_TEST";
     IM_LOGLEVEL = 3;    # 1:ERR, 2:INFO, 3:DEBUG
 
 
