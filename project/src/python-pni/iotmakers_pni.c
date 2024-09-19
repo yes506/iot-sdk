@@ -142,7 +142,7 @@ static PyObject* ImConnectTo(PyObject* self, PyObject* args)
 	int hndl = -1;
 	char *ec_ip;
 	int ec_port;
-	INF("hndl: [%d], ec_ip: [%s], ec_port: [%d]", *hndl, ec_ip, *ec_port);
+	INF("hndl: [%d], ec_ip: [%s], ec_port: [%d]", hndl, ec_ip, ec_port);
 	PyArg_ParseTuple(args, "isi", &hndl, &ec_ip, &ec_port);
 
   im_client_tPtr pclient = sesspool_sess(hndl);
