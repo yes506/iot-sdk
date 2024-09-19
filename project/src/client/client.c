@@ -698,9 +698,7 @@ int im_auth_device(im_client_tPtr cli, char *dev_id, char *dev_pw, char *svc_gw)
   int rc = im_auth_device_with_nic_desc(cli, dev_id, dev_pw, svc_gw, NULL, NULL);
   if ( rc < 0 )    {
     ERR("im_auth_device_with_nic_desc()");
-    // return -1;
-    // device 인증되었다고 가정하고 테스트
-    return 0;
+    return -1;
   }
 
 #ifdef HAVE_MQTT
